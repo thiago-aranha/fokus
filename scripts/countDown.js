@@ -9,9 +9,9 @@ const startButtonText = document.querySelector('#start-pause span');
 const playPauseIcon = document.querySelector('.app__card-primary-butto-icon');
 const timer = document.querySelector('#timer');
 
-const focusTime = 25;
-const shortRestTime = 5;
-const longRestTime = 15;
+const focusTime = 2; //25
+const shortRestTime = 2; //5
+const longRestTime = 2; //15
 
 let restTime = focusTime;
 let contextTime = restTime;
@@ -41,6 +41,11 @@ function pause() {
     playPauseIcon.setAttribute('src', '/imgs/play_arrow.png');
 }
 
+function dispatchFinishEvent() {
+    const finishEvent = new CustomEvent('countDownFinished');
+    document.dispatchEvent(finishEvent);
+}
+
 function finish () {
     finishAudio.play();
     resetCountDown(focusTime);
@@ -48,6 +53,8 @@ function finish () {
     setTimeout(() => {
         alert("Tempo finalizado");
     }, 100);
+
+    dispatchFinishEvent();
 }
 
 function countDown () {

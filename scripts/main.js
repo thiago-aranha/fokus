@@ -1,8 +1,7 @@
 "use strict"
 
-import changeLayout from "./layout.js";
+import layout from "./layout.js";
 import countDown from "./countDown.js";
-// import tasks from "./tasks.js";
 
 const focusBt = document.querySelector('.app__card-button--foco');
 const shortRestBt = document.querySelector('.app__card-button--curto');
@@ -23,21 +22,21 @@ const headerLongo = `Hora de voltar à superfície.<br>
 <strong class="app__title-strong">Faça uma pausa longa.</strong>`;
 
 focusBt.addEventListener('click', () => {
-    changeLayout('foco', headerFoco, focusBt, prevButton);
+    layout.changeLayout('focus', headerFoco, focusBt, prevButton);
     prevButton = focusBt;
-    countDown.changeContext("focus");
+    countDown.changeContext('focus');
 });
 
 shortRestBt.addEventListener('click', () => {
-    changeLayout('descanso-curto', headerCurto, shortRestBt, prevButton);
+    layout.changeLayout('shortRest', headerCurto, shortRestBt, prevButton);
     prevButton = shortRestBt;
-    countDown.changeContext("shortRest");
+    countDown.changeContext('shortRest');
 });
 
 longRestBt.addEventListener('click', () => {
-    changeLayout('descanso-longo', headerLongo, longRestBt, prevButton);
+    layout.changeLayout('longRest', headerLongo, longRestBt, prevButton);
     prevButton = longRestBt;
-    countDown.changeContext("longRest");
+    countDown.changeContext('longRest');
 });
 
 musicSwitch.addEventListener('change', () => {

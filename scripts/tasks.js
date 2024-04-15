@@ -1,11 +1,18 @@
-const addTaskButton     = document.querySelector('.app__button--add-task');
-const cancelAddButton   = document.querySelector('.app__form-footer__button--cancel');
-const addTaskForm       = document.querySelector('.app__form-add-task');
-const textArea          = document.querySelector('.app__form-textarea');
-const ulTasks           = document.querySelector('.app__section-task-list');
-const onGoingTaskDesc   = document.querySelector('.app__section-active-task-description');
+"use strict"
 
-let selectedtask        = null;
+import layout from "./layout.js";
+
+const addTaskButton         = document.querySelector('.app__button--add-task');
+const cancelAddButton       = document.querySelector('.app__form-footer__button--cancel');
+const addTaskForm           = document.querySelector('.app__form-add-task');
+const textArea              = document.querySelector('.app__form-textarea');
+const ulTasks               = document.querySelector('.app__section-task-list');
+const onGoingTaskDesc       = document.querySelector('.app__section-active-task-description');
+const remCompletedButton    = document.querySelector('#btn-remover-concluidas');
+const remAllButton          = document.querySelector('#btn-remover-todas');
+
+let selectedTask        = null;
+let liSelectedTask      = null;
 
 let taskList = JSON.parse(localStorage.getItem('tasks')) || [];
 
@@ -34,15 +41,18 @@ function listenNewTaskDescriptionButton (button, paragraph, task) {
 function activateTaskSelection (li, task) {
     li.classList.add('app__section-task-list-item-active');
     onGoingTaskDesc.textContent = task.description;
-    selectedtask = task;
+
+    selectedTask = task;
+    liSelectedTask = li;
 }
 
 function selectTask (task, li) {
     removeLiActiveSelection();
 
-    if (selectedtask === task) {
+    if (selectedTask === task) {
         onGoingTaskDesc.textContent = '';
-        selectedtask = '';
+        selectedTask = null;
+        liSelectedTask = null;
         return;
     }
 
@@ -79,10 +89,15 @@ function createTaskElement(task) {
     li.append(p);
     li.append(button);
 
-    li.onclick = () => {
-        selectTask (task, li);
+    if (task.completed) {
+        li.classList.add('app__section-task-list-item-complete');
+        button.setAttribute('disabled', 'disabled');
+    } else {
+        li.onclick = () => {
+            selectTask (task, li);
+        }
     }
-
+    
     return li;
 };
 
@@ -95,12 +110,29 @@ addTaskButton.addEventListener('click', () => {
     hideTextArea();
 });
 
+function addTaskLocalStorage(description) {
+    taskList.push({
+        "description": description
+    });
+};
+
+function removeTasksLocalStorage(operation) {
+    if (operation === 'completed') {
+        taskList = taskList.filter(task => !task.completed);
+    } else if (operation === 'all') {
+        taskList = [];
+    } else {
+        return false;
+    };
+
+    updateTaskList();
+};
+
 addTaskForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    taskList.push({
-        "description": textArea.value
-    });
+    addTaskLocalStorage(textArea.value);
+
 
     const taskElement = createTaskElement(taskList[taskList.length - 1]);
     ulTasks.append(taskElement);
@@ -112,7 +144,46 @@ addTaskForm.addEventListener('submit', (event) => {
 
 cancelAddButton.addEventListener('click', () => {
     hideTextArea();;
-})
+});
+
+function removeTasks(operation) {
+    let removableTasks = null;
+    if (operation === 'completed') {
+        removableTasks = document.querySelectorAll('.app__section-task-list-item-complete');
+    } else if (operation === 'all') {
+        removableTasks = document.querySelectorAll('.app__section-task-list-item');
+    } else {
+        return false;
+    }
+    
+    removableTasks.forEach(item => {
+        item.remove();
+    });
+    removeTasksLocalStorage(operation);
+
+    return true;
+}
+
+remCompletedButton.addEventListener('click', () => {
+    removeTasks('completed');
+});
+
+remAllButton.addEventListener('click', () => {
+    removeTasks('all');
+});
+
+document.addEventListener('countDownFinished', () => {
+    if (layout.getActiveLayout() === 'focus' && selectedTask && liSelectedTask) {
+        liSelectedTask.classList.remove('app__section-task-list-item-active');
+        liSelectedTask.classList.add('app__section-task-list-item-complete');
+        liSelectedTask.querySelector('button').setAttribute('disabled', 'disabled');
+
+        selectedTask.completed = true;
+
+        updateTaskList();
+
+    }
+});
 
 taskList.forEach(task => {
     const taskElement = createTaskElement(task);

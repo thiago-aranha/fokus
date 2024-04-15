@@ -14,11 +14,11 @@
     --main-bg-color: linear-gradient(180deg, #8B1FF8 0%, #041832 48.44%, #01080E 100%);
 }
 
-[data-context="short-rest"] {
+[data-context="shortRest"] {
     --main-bg-color: linear-gradient(180deg, #0F725C 0%, #041832 48.44%, #01080E 100%);
 }
 
-[data-context="long-rest"] {
+[data-context="longRest"] {
     --main-bg-color: linear-gradient(180deg, #1875E9 0%, #041832 48.44%, #01080E 100%);
 }
 
@@ -343,6 +343,13 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 4rem;
 }
 
+.app__form-textarea {
+    width: 100%;
+    border-radius: 0.8rem;
+    padding: 0.8rem;
+    background: #98A0A8;
+}
+
 .app__form-textarea,
 .app__form-textarea::placeholder {
     font-size: 2rem;
@@ -453,13 +460,6 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 120%;
     display: block;
     margin-bottom: 3.2rem;
-}
-
-.app__form-textarea {
-    width: 100%;
-    border-radius: 0.8rem;
-    padding: 0.8rem;
-    background: #98A0A8;
 }
 
 .app__form-footer {
